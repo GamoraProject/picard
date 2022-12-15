@@ -170,7 +170,7 @@ eval_cosql: pull-eval-image
 serve: pull-eval-image
 	mkdir -p -m 777 database
 	mkdir -p -m 777 transformers_cache
-	docker run \
+	nvidia-docker run \
 		-it \
 		--rm \
 		--user 13011:13011 \
