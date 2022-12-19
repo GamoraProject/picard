@@ -118,12 +118,10 @@ CREATE TABLE `Tasks` (
   `ProjectId` varchar(255) DEFAULT NULL,
   `Projects` longtext,
   `WorkspaceId` varchar(255) DEFAULT NULL,
-  `Notes` longtext,
   `Followers` longtext,
   `Tags` longtext,
   `Budget` double DEFAULT NULL,
   `Priority` varchar(60) DEFAULT NULL,
-  `CreatedBy` longtext,
   `NumbersOfCodeLines` int DEFAULT NULL,
   primary key("Id"),
   FOREIGN KEY("Id") REFERENCES TasksTags (TaskId)
