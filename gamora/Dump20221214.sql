@@ -108,7 +108,7 @@ DROP TABLE IF EXISTS `Tasks`;
 CREATE TABLE `Tasks` (
   `Id` varchar(255) NOT NULL,
   `Name` longtext,
-  `Assignee` longtext,
+  `AssigneeId` longtext,
   `CreatedAt` TEXT DEFAULT NULL,
   `DueOn` date DEFAULT NULL,
   `Completed` int DEFAULT 0,
@@ -173,7 +173,7 @@ CREATE TABLE `Users` (
   `Name` longtext,
   `WorkspaceId` varchar(255) DEFAULT NULL,
   primary key("Id"),
-  FOREIGN KEY("Id") REFERENCES Tasks (Assignee),
+  FOREIGN KEY("Id") REFERENCES Tasks (AssigneeId),
   FOREIGN KEY("Id") REFERENCES Tasks (CreatedBy) 
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
