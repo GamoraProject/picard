@@ -188,6 +188,26 @@ INSERT INTO `Users` VALUES ('103591019154201','Aharon Avitzur','103604275658004'
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+DROP TABLE IF EXISTS `Date`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Date` (
+  `currentDate` longtext,
+  primary key("currentDate")
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Date`
+--
+
+
+/*!40000 ALTER TABLE `Date` DISABLE KEYS */;
+INSERT INTO `Date` VALUES ('2022-10-02 12:10:43.364');
+/*!40000 ALTER TABLE `Date` ENABLE KEYS */;
+
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
