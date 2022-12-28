@@ -135,6 +135,7 @@ def main():
                     inputs=Text2SQLInput(utterance=question, db_id=db_id),
                     num_return_sequences=data_training_args.num_return_sequences
                 )
+                print("DIMA DEBUG", outputs)
             except OperationalError as e:
                 raise HTTPException(status_code=404, detail=e.args[0])
             try:

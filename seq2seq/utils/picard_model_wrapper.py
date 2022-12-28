@@ -109,6 +109,7 @@ def with_picard(
     tokenizer: PreTrainedTokenizerFast,
     schemas: Optional[Dict[str, dict]] = None,
 ):
+    #print("DIMA DEBUG WITH PICARD")
     schema_cache: Dict[str, dict] = deepcopy(schemas) if schemas is not None else dict()
 
     def get_picard_client() -> AsyncContextManager[Picard]:
@@ -171,6 +172,7 @@ def with_picard(
             )
         )
 
+        #return self.generate(*args, logits_processor=logits_processor, eos_token_id=eos_token_id, **kwargs)
         return self.old_generate(*args, logits_processor=logits_processor, eos_token_id=eos_token_id, **kwargs)
 
     class _PicardAutoModelClass(model_cls):
@@ -217,8 +219,10 @@ class PicardLogitsProcessor(LogitsProcessor):
         self.max_tokens_to_check = max_tokens_to_check
         self.mode = mode
         self.schedule = schedule
+        #print("DIMA DEBUG LOGITS PROCESSOR INIT")
 
     async def _feed(self, client: Picard, input_ids: List[int], token: int) -> bool:
+        #print("DIMA DEBUG _FEED")
         if self.mode == "lex":
             mode = Mode.LEXING
         elif self.mode == "parse_without_guards":
@@ -232,6 +236,7 @@ class PicardLogitsProcessor(LogitsProcessor):
 
         try:
             res = await client.feed(input_ids, token, mode)
+            #print("DIMA DEBUG PICARD RES", res)
         except FeedException as e:
             logger.error(f"unexpected feed error: {e}, input ids were: {input_ids}, token was: {token}")
             raise e
@@ -258,6 +263,7 @@ class PicardLogitsProcessor(LogitsProcessor):
     async def _check_token(self, client: Picard, input_ids: List[int], token: int) -> bool:
         if self.schedule == "incremental":
             # check at every step
+            #print("DIMA DEBUG _CHECK_TOKEN")
             return await self._feed(client=client, input_ids=input_ids, token=token)
         elif self.schedule == "finalizing":
             # only check when decoded string is finalized
@@ -281,6 +287,7 @@ class PicardLogitsProcessor(LogitsProcessor):
         input_ids_batch: torch.Tensor,
         top_token: torch.Tensor,
     ) -> None:
+        #print("DIMA DEBUG _MASK")
         res = await self._check_token(client=client, input_ids=input_ids_batch.tolist(), token=top_token.item())
         if not res:
             indices_to_remove[batch_idx, top_token] = True
@@ -327,10 +334,10 @@ class PicardLogitsProcessor(LogitsProcessor):
             mode = Mode.PARSING_WITH_GUARDS_AND_TYPE_CHECKING
         else:
             raise ValueError("unexpected picard mode")
-
         async with self.get_client() as client:
             try:
                 res = await client.batchFeed(input_ids.tolist(), top_tokens.tolist(), mode)
+                #print("DIMA DEBUG _BATCH RES ", res)
             except FeedException as e:
                 logger.error(
                     f"unexpected feed error: {e}, input ids were: {input_ids.tolist()}, top tokens were: {top_tokens.tolist()}"
@@ -343,6 +350,7 @@ class PicardLogitsProcessor(LogitsProcessor):
                 raise e
 
         for r in res:
+            #print("DIMA DEBUG RESULTS ",r)
             if isinstance(r.feedResult.value, FeedTimeoutFailure):
                 logger.warning(f"timeout failure: {input_ids[r.batchId].tolist() + [r.topToken]}")
                 indices_to_remove[r.batchId, r.topToken] = True
@@ -369,6 +377,7 @@ class PicardLogitsProcessor(LogitsProcessor):
         # Do not mask the EOS token because otherwise production can continue indefinitely if all other tokens are masked
         indices_to_remove[:, self.eos_token_id] = False
         # Mask top-k tokens rejected by picard
+        
         asyncio.run(
             self._batch_mask_top_k(
                 indices_to_remove=indices_to_remove,
@@ -381,10 +390,11 @@ class PicardLogitsProcessor(LogitsProcessor):
                 input_ids=input_ids,
                 top_tokens=top_tokens,
             ),
-            debug=False,
+            debug=True,
         )
         del top_tokens
         scores = scores.masked_fill(indices_to_remove, self.filter_value)
+       
         del indices_to_remove
         return scores
 

@@ -2,7 +2,7 @@ import sqlite3
 import os
 
 def create_sqlite(data_folder, schema_name):
-    con = sqlite3.connect(os.path.join(data_folder, "asana1.sqlite"))
+    con = sqlite3.connect(os.path.join(data_folder, "asana_02.sqlite"))
     cur = con.cursor()
     with open(os.path.join(data_folder, schema_name), 'r') as sql_file:
         result_iterator = cur.executescript(sql_file.read())

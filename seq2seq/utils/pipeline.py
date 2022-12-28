@@ -80,6 +80,7 @@ class Text2SQLGenerationPipeline(Text2TextGenerationPipeline):
             and all(len(res) == 1 for res in result)
         ):
             return [res[0] for res in result]
+        print("DIMA DEBUG RESULTS ", result)
         return result
 
     def preprocess(
@@ -139,6 +140,7 @@ class Text2SQLGenerationPipeline(Text2TextGenerationPipeline):
 
     def postprocess(self, model_outputs: dict, return_type=ReturnType.TEXT, clean_up_tokenization_spaces=False):
         records = []
+        print("DIMA DEBUG OUTPUTS ",model_outputs)
         for output_ids in model_outputs["output_ids"][0]:
             if return_type == ReturnType.TENSORS:
                 record = {f"{self.return_name}_token_ids": model_outputs}
@@ -153,6 +155,7 @@ class Text2SQLGenerationPipeline(Text2TextGenerationPipeline):
                     .strip()
                 }
             records.append(record)
+        print("DIMA DEBUG PIPELINE POSTPROC ", records)
         return records
 
 

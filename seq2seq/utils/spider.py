@@ -12,6 +12,7 @@ def spider_get_input(
     serialized_schema: str,
     prefix: str,
 ) -> str:
+    print("DIMA DEBUG SERI ", prefix + question.strip() + " " + serialized_schema.strip())
     return prefix + question.strip() + " " + serialized_schema.strip()
 
 
