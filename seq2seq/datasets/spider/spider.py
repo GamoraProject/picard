@@ -95,26 +95,25 @@ class Spider(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
-        downloaded_filepath = dl_manager.download_and_extract(url_or_urls=_URL)
+        #downloaded_filepath = dl_manager.download_and_extract(url_or_urls=_URL)
 
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
                 gen_kwargs={
                     "data_filepaths": [
-                        os.path.join(downloaded_filepath, "spider/train_spider.json"),
-                        os.path.join(downloaded_filepath, "spider/train_others.json"),
+                        os.path.join("/app/asana/train_asana.json"),
                     ]
                     if self.include_train_others
-                    else [os.path.join(downloaded_filepath, "spider/train_spider.json")],
-                    "db_path": os.path.join(downloaded_filepath, "spider/database"),
+                    else [os.path.join("/app/asana/train_asana.json")],
+                    "db_path": os.path.join("/app/asana/database/"),
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
                 gen_kwargs={
-                    "data_filepaths": [os.path.join(downloaded_filepath, "spider/dev.json")],
-                    "db_path": os.path.join(downloaded_filepath, "spider/database"),
+                    "data_filepaths": [os.path.join("/app/asana/train_asana.json")],
+                    "db_path": os.path.join("/app/asana/database/"),
                 },
             ),
         ]
@@ -129,7 +128,9 @@ class Spider(datasets.GeneratorBasedBuilder):
                 spider = json.load(f)
                 for idx, sample in enumerate(spider):
                     db_id = sample["db_id"]
+                    print("DIMA DEBUG ", db_id, " ", db_path)
                     if db_id not in self.schema_cache:
+                        print("DIMA ", os.path.join(db_path, db_id, f"{db_id}.sqlite"))
                         self.schema_cache[db_id] = dump_db_json_schema(
                             db=os.path.join(db_path, db_id, f"{db_id}.sqlite"), f=db_id
                         )

@@ -112,6 +112,14 @@ def load_dataset(
             pre_process_function=_spider_pre_process_function,
             **_prepare_splits_kwargs,
         )
+    elif data_args.dataset == "asana":
+        metric = _spider_metric()
+        dataset_splits = prepare_splits(
+            dataset_dict=_spider_dataset_dict(),
+            add_serialized_schema=_spider_add_serialized_schema,
+            pre_process_function=_spider_pre_process_function,
+            **_prepare_splits_kwargs,
+        )
     elif data_args.dataset == "cosql":
         metric = _cosql_metric()
         dataset_splits = prepare_splits(

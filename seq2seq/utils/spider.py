@@ -12,7 +12,7 @@ def spider_get_input(
     serialized_schema: str,
     prefix: str,
 ) -> str:
-    print("DIMA DEBUG SERI ", prefix + question.strip() + " " + serialized_schema.strip())
+    #print("DIMA DEBUG SERI ", prefix + question.strip() + " " + serialized_schema.strip())
     return prefix + question.strip() + " " + serialized_schema.strip()
 
 
@@ -92,6 +92,7 @@ class SpiderTrainer(Seq2SeqTrainer):
     def _post_process_function(
         self, examples: Dataset, features: Dataset, predictions: np.ndarray, stage: str
     ) -> EvalPrediction:
+        print("DIMA DEBUG DATASET SIZE ", len(features))
         inputs = self.tokenizer.batch_decode([f["input_ids"] for f in features], skip_special_tokens=True)
         label_ids = [f["labels"] for f in features]
         if self.ignore_pad_token_for_loss:

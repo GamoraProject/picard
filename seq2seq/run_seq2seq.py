@@ -195,7 +195,7 @@ def main() -> None:
             "target_with_db_id": data_training_args.target_with_db_id,
         }
         #using spidertrainer as it is.
-        if data_args.dataset in ["spider", "spider_realistic", "spider_syn", "spider_dk"]:
+        if data_args.dataset in ["spider", "spider_realistic", "spider_syn", "spider_dk", "asana"]:
             trainer = SpiderTrainer(**trainer_kwargs)
         elif data_args.dataset in ["cosql", "cosql+spider"]:
             trainer = CoSQLTrainer(**trainer_kwargs)
@@ -205,14 +205,13 @@ def main() -> None:
         # Training
         if training_args.do_train:
             logger.info("*** Train ***")
-
+            print("DIMA DEBUG TRAIN")
             checkpoint = None
 
             if training_args.resume_from_checkpoint is not None:
                 checkpoint = training_args.resume_from_checkpoint
             elif last_checkpoint is not None:
                 checkpoint = last_checkpoint
-
             train_result = trainer.train(resume_from_checkpoint=checkpoint)
             trainer.save_model()  # Saves the tokenizer too for easy upload
 
